@@ -38,9 +38,9 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
         # Custom welcome message with Telegram username if available
         if user_username:
-            welcome_text = f"欢迎 @{user_username} 👋、大家加入，想聊或着分享什么都可以，视频，旅游\n"
+            welcome_text = f"欢迎 @{user_username} 👋加入，想聊或着分享什么都可以，视频，旅游\n"
         else:
-            welcome_text = f"欢迎 {user_name} 👋、大家加入，想聊或着分享什么都可以，视频，旅游\n"
+            welcome_text = f"欢迎 {user_name} 👋加入，想聊或着分享什么都可以，视频，旅游\n"
         
         welcome_text += """
 🔞只限男孩子
