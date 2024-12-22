@@ -6,6 +6,9 @@ from telegram.ext import (
     ContextTypes,
     filters
 )
+from keep_alive import keep_alive
+
+keep_alive()
 
 # Dictionary to track new users and their verification status
 pending_users = {}
@@ -41,7 +44,7 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
             welcome_text = f"欢迎 @{user_username} 👋加入，想聊或着分享什么都可以，视频，旅游\n"
         else:
             welcome_text = f"欢迎 {user_name} 👋加入，想聊或着分享什么都可以，视频，旅游\n"
-        
+
         welcome_text += """
 🔞只限男孩子
 
@@ -51,17 +54,17 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 📌脸照一张！（管理员审核
 
-﻿﻿📌自我介绍
-﻿﻿称呼：
-﻿﻿年龄：
-﻿﻿地区：
-﻿﻿高/重：
-﻿﻿角色：
+📌自我介绍
+称呼：
+年龄：
+地区：
+高/重：
+角色：
 1号发屌照一张
 0号发屁股照一张
 （4小时无完成以会自动被退出群）
         """
-        
+
         # Send the custom welcome message
         await context.bot.send_message(chat_id=chat_id, text=welcome_text)
 
@@ -89,21 +92,21 @@ async def kick_unverified_user(context: ContextTypes.DEFAULT_TYPE, user_id: int)
             # Retrieve the username of the user
             user_info = await context.bot.get_chat_member(chat_id, user_id)
             user_username = user_info.user.username if user_info.user.username else str(user_id)  # Use username if available, else fallback to user_id
-            
+
             # Kick the user
             await context.bot.ban_chat_member(chat_id=chat_id, user_id=user_id)
             del pending_users[user_id]  # Remove from pending users list
             print(f"User {user_id} kicked out successfully.")
-            
+
             # Send a message explaining why the user was removed
             kicked_message = await context.bot.send_message(
                 chat_id=chat_id,
                 text=f"@{user_username}，你因为未通过验证而被踢出群聊。"
             )
-            
+
             # Log the action using the username if available
             await send_log(context, f"User @{user_username} was kicked out due to verification timeout.")
-            
+
             # Delete the kicked out message after 15 seconds
             await asyncio.sleep(15)
             await context.bot.delete_message(chat_id=chat_id, message_id=kicked_message.message_id)
@@ -122,13 +125,13 @@ async def verify_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if user_id in pending_users and not pending_users[user_id]["verified"]:
         print(f"User {user_id} is pending verification.")
-        
+
         chat_id = pending_users[user_id]["chat_id"]
-        
+
         # Mark the user as verified
         pending_users[user_id]["verified"] = True
         print(f"User {user_id} marked as verified.")
-        
+
         # Cancel the timeout task
         timeout_task = pending_users[user_id].get("timeout_task")
         if timeout_task:
@@ -152,21 +155,21 @@ async def verify_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     text="你的验证已通过！"
                 )
                 print("Success message sent (no username).")
-            
+
             # Log the verification
             await send_log(context, f"User @{user_username if user_username else user_id} has been verified successfully.")
-            
+
             # Delete the success message after 10 seconds
             await asyncio.sleep(10)
             await context.bot.delete_message(chat_id=chat_id, message_id=message.message_id)
             print(f"Success message for user {user_id} deleted.")
-        
+
         except Exception as e:
             print(f"Error sending verification message: {e}")
 
     else:
         print(f"User {user_id} not found in pending_users or already verified.")
-        
+
 # Main function
 def main():
     # Build the application
