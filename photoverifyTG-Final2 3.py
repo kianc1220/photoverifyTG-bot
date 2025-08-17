@@ -14,7 +14,7 @@ keep_alive()
 pending_users = {}
 
 # Replace with your logging group chat ID (can be obtained by adding the bot to the group and using the getUpdates method)
-LOGGING_CHAT_ID = '-4761682303'  # Use the actual chat ID of your logging group
+LOGGING_CHAT_ID = ''  # Use the actual chat ID of your logging group
 
 # Function to send logs to the logging group
 async def send_log(context: ContextTypes.DEFAULT_TYPE, message: str):
@@ -41,29 +41,11 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
         # Custom welcome message with Telegram username if available
         if user_username:
-            welcome_text = f"欢迎 @{user_username} 👋加入，想聊或着分享什么都可以，视频，旅游\n"
+            welcome_text = f"Welcome @{user_username} 👋Joined, you can chat or share anything, video, travel\n"
         else:
-            welcome_text = f"欢迎 {user_name} 👋加入，想聊或着分享什么都可以，视频，旅游\n"
+            welcome_text = f"欢迎 {user_name} 👋Joined, you can chat or share anything, video, travel\n"
 
-        welcome_text += """
-🔞只限男孩子
-
-📌入群请先发张或自己的身材吊照！
-
-📌不要刪，不要撤，方便管理员检查。
-
-📌脸照一张！（管理员审核
-
-📌自我介绍
-称呼：
-年龄：
-地区：
-高/重：
-角色：
-1号发屌照一张
-0号发屁股照一张
-（4小时无完成以会自动被退出群）
-        """
+        welcome_text += """UR TEXT"""
 
         # Send the custom welcome message
         await context.bot.send_message(chat_id=chat_id, text=welcome_text)
@@ -101,7 +83,7 @@ async def kick_unverified_user(context: ContextTypes.DEFAULT_TYPE, user_id: int)
             # Send a message explaining why the user was removed
             kicked_message = await context.bot.send_message(
                 chat_id=chat_id,
-                text=f"@{user_username}，你因为未通过验证而被踢出群聊。"
+                text=f"@{user_username}，You were kicked out of the group chat because you failed to pass the verification."
             )
 
             # Log the action using the username if available
@@ -152,7 +134,7 @@ async def verify_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 message = await context.bot.send_message(
                     chat_id=chat_id, 
-                    text="你的验证已通过！"
+                    text="Your verification has passed!"
                 )
                 print("Success message sent (no username).")
 
